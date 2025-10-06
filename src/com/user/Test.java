@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
+import org.hibernate.Transaction;
 
 import com.config.HibernateUtil;
 import com.model.Customer1;
@@ -41,15 +41,16 @@ public class Test {
 				c1.setUsername(c1.getName()+"@auth");
 				c1.setPassword(UUID.randomUUID().toString().substring(0, 8));
 				
-				ss.persist(c1);
-				ss.beginTransaction().commit();
+				Transaction tx1 = ss.beginTransaction();  
+                ss.persist(c1);                            
+                tx1.commit(); 
 				System.out.println("User registered succesfully....\nYou can use below credentials to login");
 				System.out.println("UserName:"+c1.getUsername());
 				System.out.println("Password:"+c1.getPassword());
 				break;
 			
 			case 2:
-				String retriveAll="from Customer";
+				String retriveAll="from Customer1";
 				Query<Customer1> query =ss.createQuery(retriveAll, Customer1.class);
 				List<Customer1> list=query.getResultList();
 				System.out.println("Enter username to login:");
@@ -81,8 +82,9 @@ public class Test {
 				int id=s.nextInt();
 				Customer1 customer=ss.find(Customer1.class, id);
 				if(customer!=null) {
-					ss.remove(customer);
-					ss.beginTransaction().commit();
+					Transaction tx3 = ss.beginTransaction();
+                    ss.remove(customer);                     
+                    tx3.commit(); 
 					System.out.println("Not registered with us.......");
 					continue;
 				}
